@@ -1,6 +1,6 @@
 {
   "name": "nbatis",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "data persistence plug-in components node version，it is similar to mybatis",
   "main": "index.js",
   "scripts": {
