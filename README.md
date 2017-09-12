@@ -1,5 +1,6 @@
-nbatis
-=
+nBatis
+======
+![](https://github.com/vyspace/nbatis/blob/master/nbatis.jpg)
 data persistence plugin
 -
 * brief introduction:<br/>
