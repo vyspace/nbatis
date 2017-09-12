@@ -1,6 +1,7 @@
 Welcome to nbatis!
 ===================
-![enter image description here](https://github.com/vyspace/nbatis/blob/master/nbatis.jpg)
+![](https://github.com/vyspace/nbatis/blob/master/nbatis.jpg) 
+<br/>
 ![](https://img.shields.io/travis/rust-lang/rust.svg)  ![](https://img.shields.io/badge/tag-1.0.0-blue.svg)
 
 This a node plugin about data persistence, if you used mybatis before, you'll learn it soon..
@@ -181,10 +182,13 @@ You can use javascript command in the sql, we still use mapper file User.json
 Class       |Name   | Static |   Description
 -----------| ------ |--------|---------------
 SqlSessionFactory|createPool | no     | create a database connection pool
-	^      |openSession| no     | to get a connection from connection pool
+SqlSessionFactory|openSession| no     | to get a connection from connection pool
 Factory|selectOne | no     | return a record
-^      |selectList | no     | return a record list
-^      |insert | no     | insert a object into table
-^      |update | no     | update a record in the table
-^      |commits | no     | to finish modifying operation of data table
-^      |rollbacks | no     | When you meet the error back
+Factory|selectList | no     | return a record list
+Factory|insert | no     | insert a object into table
+Factory|update | no     | update a record in the table
+Factory|commits | no     | to finish modifying operation of data table
+Factory|rollbacks | no     | When you meet the error back
+
+
+#### More specifications,  in the building...
