@@ -196,4 +196,6 @@ Factory|rollbacks | no     | When you meet the error back
 
 <br/>
 <br/>
-![](https://nodei.co/npm/nbatis.png)
+
+
+[![NPM](https://nodei.co/npm/nbatis.png)](https://nodei.co/npm/nbatis/)
