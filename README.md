@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-
-=======
 nbatis
 =
 data persistence plugin
