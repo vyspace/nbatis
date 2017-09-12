@@ -1,0 +1,12 @@
+{
+  "dataSource": {
+    "host":"localhost",
+    "user": "your usernmane",
+    "password": "your password",
+    "database": "your database name",
+    "connectionLimit": 5
+  },
+  "mappers": {
+    "User": "./user_mapper.json"
+  }
+}

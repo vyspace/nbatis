@@ -1,0 +1,11 @@
+{
+  "add": {
+    "parameterType": "object",
+    "sql": "insert into user (username, password) values ({Username}, {Password})"
+  },
+  "loadById": {
+    "parameterType": "number",
+    "resultType": "cobject",
+    "sql": "select * from user where id={id}"
+  }
+}
