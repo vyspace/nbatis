@@ -9,13 +9,11 @@ const test = async () => {
     const factory = new SqlSessionFactory().createPool(configPath);
     let session = null;
     try{
-        session = await (factory.openSession());
+        session = await factory.openSession();
         const user = new User(0, 'test05', '123456');
         await session.insert('User.add', user);
-        await session.commits();
     }
     catch(err) {
-        await session.rollbacks();
         throw err;
     }
     finally {

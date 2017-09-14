@@ -1,6 +1,6 @@
 {
   "name": "nbatis",
-  "version": "1.0.5",
+  "version": "1.0.9",
   "description": "data persistence plug-in components node version，it is similar to mybatis",
   "main": "index.js",
   "scripts": {
@@ -16,5 +16,8 @@
     "url": "https://github.com/vyspace/nbatis"
   },
   "author": "EvanZh",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies" : {
+    "mysql": "^2.13.0"
+  }
 }
