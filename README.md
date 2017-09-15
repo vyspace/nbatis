@@ -1,19 +1,33 @@
 Welcome to nbatis!
-===================
+===
+
 ![](https://github.com/vyspace/nbatis/blob/master/nbatis.jpg) 
 <br/>
 <br/>
 ![](https://img.shields.io/travis/rust-lang/rust.svg)  ![](https://img.shields.io/badge/tag-latest-blue.svg)
 
 This a node plugin about data persistence, if you used mybatis before, you'll learn it soon..
+The plugin is given priority to with node [mysql](https://www.npmjs.com/package/mysql) driver，at present.
+Nbatis is mostly API compatible with [mysql](https://www.npmjs.com/package/mysql) and supports majority of features. It also offers these additional features.
+
 
 ----------
 
 
-# Quick start
+### Table of contents
+- [Install](#install)
+- [Configuration](#configuration)
+- [Example](#example)
+- [Dynamic SQL](#dynamic-sql)
+- [Multiple table operation](#multiple-table-operation)
+- [API](#api)
+
 -------------
 ### Install
->  npm install nbatis --save
+
+```javascript
+npm install nbatis --save
+```
 
 ### Configuration
 
@@ -53,7 +67,7 @@ The configuration is below:
 ```
 
 |  ps       | mapper explanation  |
-| ------------- |:-------------:|
+| ------------- |:-------------|
 | parameterType| javascript basic data type: number, string, boolean, object|
 | #| The program will put #{} replaced with ?, [escaping-query-values](https://www.npmjs.com/package/mysql#escaping-query-values)|
 | $| The program will put \${} replaced with parameter values|
@@ -64,7 +78,7 @@ The configuration is below:
 
 ##### The following code uses the ES6 syntax
 
-- First of all, you'd better create a User class file. 
+- First of all, you'd better create a class file **User.js** 
 ```javascript
 'user strict';
 
@@ -103,7 +117,7 @@ class User {
 module.exports = User;
 ```
 
- - Second, you need to create global session factory. Now we create a js file name it SNBatisUtil.  It is a static class and introduce nbatis module. The factory is singleton.
+ - Second, you need to create global session factory. Now we create a util file **SNBatisUtil.js**;  It is a static class and introduce nbatis module and the factory is singleton.
 
 ```javascript
 'user strict';
@@ -153,7 +167,7 @@ SNBatisUtil[_static]();
 module.exports = SNBatisUtil;
 ```
 
- - Third, creating a js class file name it BaseDao, Including basis of  database operations in here.
+ - Third, creating a js dao file **BaseDao.js**; Including basis of  database operations in here.
  
 
 ```javascript
@@ -195,11 +209,12 @@ class BaseDao {
 module.exports = BaseDao;
 ```
 
-- For now,  we can create a userDao.js file to test functions
+- For now,  we can create a user dao test file **userDao.js** to test functions:
 
 ```javascript
 'use strict';
 const BaseDao = require('./BaseDao');
+    User = require('./User');
 class UserDao extends BaseDao {
     async add(user) {
         try {
@@ -214,11 +229,16 @@ class UserDao extends BaseDao {
         }
     }
 }
+
+const user = User('test', '123');
+    userDao = UserDao();
+user.add(user);
+
 ```
 
 ### Dynamic SQL
 
-You can use javascript command in the sql, we still use mapper file User.json
+You can put javascript commands into sql, we still modify mapper file **classname.json**
 
 ```javascript
 "pager": {
@@ -228,12 +248,24 @@ You can use javascript command in the sql, we still use mapper file User.json
 },
 ```
 |  ps       | mapper explanation  |
-| ------------- |:-------------:|
-| dynamic| true or false, default false. if true, the program will explain this code|
+| ------------- |:-------------|
+| dynamic| true or false, default value is false. if true, the program will explain this code|
 |<%%>|javascript code is included between symbols|
 |{{param}}|The variable param replace ${param｝|
 
+### Multiple table operation
 
+- If you want to operate multiple tables in one transaction, you can join multiple  sql commands with semi-colon. An example is shown below:
+
+
+```javascript
+{
+    "add": {
+        "parameterType": "object",
+        "sql": "insert into user (username, password) values (#{Username}, {#Password});insert into user_info (gender) values (#{gender})"
+    }
+}
+```
 
 ### API
 
@@ -241,11 +273,12 @@ Class|Object |Name   |Parameter| Static |   Description
 -----------| ------ |--------|----|------|---------
 SqlSessionFactory|factory|createPool || no     | create a database connection pool
 SqlSessionFactory|factory|openSession|| no     | to get a connection from connection pool
-SqlSessionFactory|factory|closeSession|session| no     | to get a connection from connection pool
+SqlSessionFactory|factory|closeSession|session| no     | to release a connection to connection pool
 Session|session|selectOne |tag, param| no     | return a record
 Session|session|selectList | tag, param|no     | return a record list
 Session|session|insert | tag, param|no     | insert a object into table
 Session|session|update | tag, param|no     | update a record in the table
+Session|session|delete | tag, param|no     | delete a record from the table
 
 
 #### More specifications,  in the building...
