@@ -1,0 +1,27 @@
+{
+  "list": {
+    "parameterType": "object",
+    "sql": "select * from user_sql limit ${start},${length}"
+  },
+  "loadById": {
+    "parameterType": "object",
+    "sql": "select * from user_sql where id=${id}"
+  },
+  "pager": {
+    "parameterType": "object",
+    "dynamic": true,
+    "sql": "select * from user_sql <%if({{where}}){return 'where url like ${where}'}%> <%if({{orderKey}}&&{{order}}){return 'order by ${orderKey} ${order}';}%> <%if({{start}}&&{{pageSize}}){return 'limit ${start},${pageSize}';}%>"
+  },
+  "updateById": {
+  	"parameterType": "object",
+  	"sql": "update user_sql set url=#{url} where id=#{id}"
+  },
+  "deleteById": {
+  	"parameterType": "number",
+  	"sql": "delete from user_sql where id=#{id};"
+  },
+  "insertAndUpdate": {
+  	"parameterType": "object",
+  	"sql": "insert into ${tableName} (username,password,gender,birthday,email,url) values (#{username},#{password},#{gender},#{birthday},#{email},#{url});update ${tableName} set password=#{updatePassword} where username=#{username}"
+  }
+}

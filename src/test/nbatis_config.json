@@ -1,0 +1,12 @@
+{
+  "dataSource": {
+    "host":"localhost",
+    "user": "hello",
+    "password": "123456",
+    "database": "_fakoa",
+    "connectionLimit": 5
+  },
+  "mappers": {
+    "UserSQL": "./user_mapper.json"
+  }
+}

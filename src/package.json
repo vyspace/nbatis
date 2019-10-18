@@ -1,0 +1,35 @@
+{
+  "name": "nbatis2",
+  "version": "2.0.0",
+  "description": "It's a data persistence plugin on the node.js platform，it is similar to mybatis",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nbatis",
+    "store",
+    "persistence",
+    "frame",
+    "sql",
+    "mysql",
+    "database",
+    "mybatis",
+    "hibernate"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vyspace/nbatis"
+  },
+  "author": "EvanZheng",
+  "license": "ISC",
+  "dependencies": {
+    "mysql": "^2.17.1"
+  },
+  "devDependencies": {
+    "@types/mysql": "^2.15.7",
+    "@types/node": "^12.7.8",
+    "tunit": "^1.0.1"
+  },
+  "types": "index.d.ts"
+}
