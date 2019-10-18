@@ -1,4 +1,4 @@
-Welcome to NBatis !
+Welcome to NBatis2.0 !
 ===
 
 ![](https://github.com/vyspace/nbatis/blob/master/nbatis.jpg) 
@@ -30,7 +30,7 @@ npm install nbatis --save
 
 ### Example
 
-> PS: It is recommended to use typescript to code your project. Make sure typescript is installed before testing. Install the plug-in globally.
+> PS: It is recommended to use typescript to code your project. Make sure typescript is installed before this example. Please install the ts plug-in globally.
 
 ##### Create POJO
 
@@ -93,7 +93,7 @@ export default class UserSQL {
 ```
 
 
->Each item in the table corresponds to each property of the pojo class, all of which are public and default value is a object. The object have several properties.
+ - Each item in the table corresponds to each property of the pojo class, all of which are public and default value is a object. The object have several properties. These properties help us complete the SQL statement.
 
 
 ```javascript
@@ -324,6 +324,8 @@ export default class TheTest {
 }
  ```
 
+Next we start configuring nbatis.
+
 #####Configuration
 
  - Fist, to create a configuration file  named **nbatis_config.json**，of course you can name it anyother name.
@@ -345,7 +347,8 @@ export default class TheTest {
 }
 ```
 
- - Second, creating mapper file called **user_config.json**. You can create mapper folder, and put all mapper files in this folder.
+ - Second, creating mapper file called **user_mapper.json**. If you have multiple mapper files, you can put them in one folder.
+
 
 ```javascript
 {
@@ -385,9 +388,12 @@ export default class TheTest {
 | dynamic|Whether the SQL statement is dynamic, the type is boolean or undefined|
 | sql|SQL statements with variables, the type is string|
 
+
 ##### Run
 
+
  - Make sure the typescript configuration file **tsconfig.json** is generated before running.
+
 
 ```javascript
 tsc --init 
@@ -395,9 +401,14 @@ tsc --init
 
 - For now, you can run the unit test case.
 
+
 ```javascript
 ts-node ./TheTest.ts
 ```
+
+ > If you set a path in the decorator TUnit, the **tunit.log** file will be generated at the end of the test under that path. The resulting log is written to the file as an addendum.
+
+
 
 ### Common SQL
 
@@ -408,6 +419,7 @@ Description of non-dynamic SQL statements in mapper files
 | ${} |The program will put \${} replaced with parameter values|
 | #{} |The program will put #{} replaced with ?, [escaping-query-values](https://www.npmjs.com/package/mysql#escaping-query-values)|
 
+
 ### Dynamic SQL
 
 You can write SQL statements as normal js syntax, allowing the SQL statements to produce different results as parameters.
@@ -416,6 +428,7 @@ You can write SQL statements as normal js syntax, allowing the SQL statements to
 | ------------- |:-------------|
 |<%%>|javascript code is included between symbols|
 |{{params}}|The SQL parameters that appear in the javascript statement are wrapped in {{}}|
+
 
 ### Multiple SQL
 
@@ -430,9 +443,12 @@ Here is a example:
 
 ```
 
+ > Multiple SQL runs can also manipulate multiple tables.
+
+
 ### API
 
-**SqlSessionFactory**
+**[SqlSessionFactory]**
 ```javascript
 createPool(configFilePath:string):any
 ```
@@ -446,7 +462,7 @@ createPool(configFilePath:string):any
 ```
  - Return session.
 
-**Session**
+**[Session]**
 ```javascript
 async selectList(tag:string, params:any):Promise<any>
 ```
@@ -492,7 +508,7 @@ async selectList(tag:string, params:any):Promise<any>
 
  - Return a list of state object.
 
-**DBUtil**
+**[DBUtil]**
 ```javascript
 static createTableSQL(typeReference:any, tableName?:string):string
 ```
