@@ -28,8 +28,7 @@
   },
   "devDependencies": {
     "@types/mysql": "^2.15.7",
-    "@types/node": "^12.7.8",
-    "tunit": "^1.0.1"
+    "@types/node": "^12.7.8"
   },
   "types": "index.d.ts"
 }
