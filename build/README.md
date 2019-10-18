@@ -326,7 +326,11 @@ export default class TheTest {
 
 Next we start configuring nbatis.
 
+
+
 #####Configuration
+
+
 
  - Fist, to create a configuration file  named **nbatis_config.json**，of course you can name it anyother name.
 
