@@ -1,5 +1,5 @@
 {
-  "name": "nbatis2",
+  "name": "nbatis",
   "version": "2.0.0",
   "description": "It's a data persistence plugin on the node.js platform，it is similar to mybatis",
   "main": "index.js",
