@@ -251,7 +251,7 @@ export default class FactoryTest {
         try{
             const params = {
                 tableName: 'user_sql',
-                where: '"%com"',
+                where: '"%com"',     //String variables in dynamic SQL need to be quoted.
                 start:0,
                 pageSize:5,
                 order: 'desc'
@@ -326,15 +326,15 @@ export default class FactoryTest {
      * Test to close connection pool
      */
     @AfterClass
-    endPool(next:Function) {
-        this.factory.getPool().end((err:any)=>{
-            if(err) {
-                next(err);
-            }
-            else {
-                next(true);
-            }
-        });
+    async endPool(next:Function) {
+        let res:any;
+        try {
+            res = await this.factory.endPool();
+            next(res);
+        }
+        catch(err) {
+            next(err);
+        }
     }
 }
  ```
@@ -563,9 +563,9 @@ export default class TemplateTest {
         }
     }
     @AfterClass
-    async end(next:Function) {
+    async endPool(next:Function) {
         try {
-            const res = await this.template.end();
+            const res = await this.template.getFactory().endPool();
             next(res);
         }
         catch(err) {
@@ -582,18 +582,32 @@ export default class TemplateTest {
 ### API
 
 **[SqlSessionFactory]**
+
+
 ```javascript
 createPool(configFilePath:string):any
 ```
+> Each factory object corresponds to a link pool object.
+
  - Parameters
  configFilePath: The path to the configuration file.
 
  - Return factory object.
 
 ```javascript
- openSession():Promise<any>
+openSession():Promise<any>
 ```
  - Return session.
+
+```javascript
+getPool():any
+```
+ - Returns a singleton pool object.
+
+```javascript
+endPool():Promise<any>
+```
+ - Close pool.
 
 **[Session / SqlSessionTemplate]**
 ```javascript
@@ -606,7 +620,7 @@ async selectList(tag:string, params:any):Promise<any>
  - Return a list of data.
 
 ```javascript
- async selectOne(tag:string, params:any):Promise<any>
+async selectOne(tag:string, params:any):Promise<any>
 ```
  - Parameters
  tag: The key of item in mapper file.
@@ -615,9 +629,9 @@ async selectList(tag:string, params:any):Promise<any>
  - Return a piece of data.
 
 ```javascript
- async insert(tag:string, params:any):Promise<any>
- async update(tag:string, params:any):Promise<any>
- async delete(tag:string, params:any):Promise<any>
+async insert(tag:string, params:any):Promise<any>
+async update(tag:string, params:any):Promise<any>
+async delete(tag:string, params:any):Promise<any>
 ```
  - Parameters
  tag: The key of item in mapper file.
@@ -626,16 +640,16 @@ async selectList(tag:string, params:any):Promise<any>
  - Return a list of state object.
 
 ```javascript
- async queryGet(sql:string):Promise<any>
+async queryGet(sql:string):Promise<any>
 ```
  - Parameters
  sql: SQL statement
 
  - Return the query results.
 
- ```javascript
- async querySet(sql:string):Promise<any>
- ```
+```javascript
+async querySet(sql:string):Promise<any>
+```
  - Parameters
  sql: SQL statement
 
@@ -644,9 +658,9 @@ async selectList(tag:string, params:any):Promise<any>
 **[SqlSessionTemplate]**
 
 ```javascript
-end():Promise<any>
+getFactory():any
 ```
- Close connection pool.
+ - Return a factory object.
 
 **[DBUtil]**
 ```javascript

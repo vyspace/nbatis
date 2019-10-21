@@ -13,23 +13,38 @@ export default class SqlSessionFactory {
 		if(!Util.testJsonFile(configFilePath)) {
 			throw new Error('The parameter must be a json file!');
 		}
-		try {
-			const bf = fs.readFileSync(configFilePath, Util.baseData.encode);
-			const config = JSON.parse(bf.toString());
-			const {host,user,password,database,connectionLimit} = config.dataSource;
-			this.pool = mysql.createPool({
-                host,user,password,database,connectionLimit,
-            });
-            Util.baseData.configFileDir = path.dirname(configFilePath);
-            Util.baseData.configOptions = config;
-		}
-		catch(err) {
-			throw err;
-		}
+        if(!this.pool) {
+            try {
+                const bf = fs.readFileSync(configFilePath, Util.baseData.encode);
+                const config = JSON.parse(bf.toString());
+                const {host,user,password,database,connectionLimit} = config.dataSource;
+                this.pool = mysql.createPool({
+                    host,user,password,database,connectionLimit,
+                });
+                Util.baseData.configFileDir = path.dirname(configFilePath);
+                Util.baseData.configOptions = config;
+            }
+            catch(err) {
+                throw err;
+            }
+        }
         return this;
     }
     getPool():any {
         return this.pool;
+    }
+    endPool():Promise<any> {
+        return new Promise((resolve:Function, reject:Function)=>{
+            this.pool.end((err:any)=>{
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    this.pool = null;
+                    resolve(true);
+                }
+            });
+        });
     }
     openSession():Promise<any> {
         return new Promise((resolve:Function, reject:Function) => {

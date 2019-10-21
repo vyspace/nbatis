@@ -9,5 +9,5 @@ export default class SqlSessionTemplate {
     queryGet(sql: string): Promise<any>;
     querySet(sql: string): Promise<any>;
     private pormiseFactory;
-    end(): Promise<any>;
+    getFactory(): any;
 }

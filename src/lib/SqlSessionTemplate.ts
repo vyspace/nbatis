@@ -53,16 +53,7 @@ export default class SqlSessionTemplate {
 		    }
 		});
 	}
-	end():Promise<any> {
-		return new Promise((resolve:Function, reject:Function)=>{
-			this.factory.getPool().end((err:any)=>{
-				if(err) {
-					reject(err);
-				}
-				else {
-					resolve(true);
-				}
-			});
-		})
+	getFactory():any {
+		return this.factory;
 	}
 }

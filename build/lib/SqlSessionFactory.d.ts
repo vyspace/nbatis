@@ -3,6 +3,7 @@ export default class SqlSessionFactory {
     constructor();
     createPool(configFilePath: string): any;
     getPool(): any;
+    endPool(): Promise<any>;
     openSession(): Promise<any>;
     private methodQuote;
 }

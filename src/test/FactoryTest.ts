@@ -206,14 +206,14 @@ export default class FactoryTest {
 	 * Test to close connection pool
 	 */
 	@AfterClass
-	endPool(next:Function) {
-		this.factory.getPool().end((err:any)=>{
-			if(err) {
-				next(err);
-			}
-			else {
-				next(true);
-			}
-		});
+	async endPool(next:Function) {
+		let res:any;
+		try {
+			res = await this.factory.endPool();
+			next(res);
+		}
+		catch(err) {
+			next(err);
+		}
 	}
 }

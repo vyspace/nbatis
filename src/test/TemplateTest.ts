@@ -91,9 +91,9 @@ export default class TemplateTest {
 		}
 	}
 	@AfterClass
-	async end(next:Function) {
+	async endPool(next:Function) {
 		try {
-			const res = await this.template.end();
+			const res = await this.template.getFactory().endPool();
 			next(res);
 		}
 		catch(err) {

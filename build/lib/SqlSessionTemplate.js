@@ -63,17 +63,8 @@ class SqlSessionTemplate {
             }
         }));
     }
-    end() {
-        return new Promise((resolve, reject) => {
-            this.factory.getPool().end((err) => {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    resolve(true);
-                }
-            });
-        });
+    getFactory() {
+        return this.factory;
     }
 }
 exports.default = SqlSessionTemplate;
