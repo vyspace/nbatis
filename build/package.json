@@ -1,6 +1,6 @@
 {
   "name": "nbatis",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "It's a data persistence plugin on the node.js platform，it is similar to mybatis",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,8 @@
   },
   "devDependencies": {
     "@types/mysql": "^2.15.7",
-    "@types/node": "^12.7.8"
+    "@types/node": "^12.7.8",
+    "tunit": "^1.0.1"
   },
   "types": "index.d.ts"
 }

@@ -31,6 +31,9 @@ class SqlSessionFactory {
         }
         return this;
     }
+    getPool() {
+        return this.pool;
+    }
     openSession() {
         return new Promise((resolve, reject) => {
             this.pool.getConnection((err, connection) => {

@@ -28,6 +28,9 @@ export default class SqlSessionFactory {
 		}
         return this;
     }
+    getPool():any {
+        return this.pool;
+    }
     openSession():Promise<any> {
         return new Promise((resolve:Function, reject:Function) => {
             this.pool.getConnection((err:any, connection:any) => {

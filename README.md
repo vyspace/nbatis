@@ -19,6 +19,7 @@ NBatis is mostly API compatible with [mysql](https://www.npmjs.com/package/mysql
 - [Common SQL](#common-sql)
 - [Dynamic SQL](#dynamic-sql)
 - [Multiple SQL](#multiple-sql)
+- [Template SQL](#template-sql)
 - [API](#api)
 
 -------------
@@ -92,7 +93,6 @@ export default class UserSQL {
 }
 ```
 
-
  - Each item in the table corresponds to each property of the pojo class, all of which are public and default value is a object. The object have several properties. These properties help us complete the SQL statement.
 
 
@@ -115,27 +115,29 @@ export default class UserSQL {
 npm install tunit --save-dev
 ```
 
- - Second, create a entity class named **TheTest.ts**. Because a decorator in tunit is named Test so the name of the test class cannot be called "Test".
+ - Second, create a entity class named **FactoryTest.ts**. Because a decorator in tunit is named Test so the name of the test class cannot be called "Test".
 
  ```javascript
 import path from 'path';
 import { BeforeClass,Test,AfterClass,TUnit,Assert } from 'tunit';
-import { SqlSessionFactory, DBUtil } from 'nbatis';
+import { SqlSessionFactory, DBUtil } from '../index';
 import UserSQL from './UserSQL';
 
-@TUnit('./') //If you want to get the test log, you need to fill in the path to the log file
-export default class TheTest {
+@TUnit('./')
+export default class FactoryTest {
+    factory:any
     session:any;
     constructor() {
         this.session = null;
+        this.factory = null;
     }
 
     @BeforeClass
     async init(next:Function) {
         try {
-            const configrationFilePath = path.join(__dirname, './nbatis_config.json'),
-            factory = new SqlSessionFactory().createPool(configrationFilePath);
-            this.session = await factory.openSession();
+            const configrationFilePath = path.join(__dirname, './nbatis_config.json');
+            this.factory = new SqlSessionFactory().createPool(configrationFilePath);
+            this.session = await this.factory.openSession();
             next();
         }
         catch(err) {
@@ -300,9 +302,9 @@ export default class TheTest {
         }
     }
     /**
-     * To test deleting a table with the class
+     * To test delete a table with the class
      */
-    @AfterClass
+    @Test
     async dropTabel(next:Function) {
         const sql = DBUtil.dropTableSQL(UserSQL);
         let res:any;
@@ -316,10 +318,23 @@ export default class TheTest {
         finally {
             if(this.session) {
                 await this.session.release();
-                await this.session.destroy();
             }
             next(res);
         }
+    }
+    /**
+     * Test to close connection pool
+     */
+    @AfterClass
+    endPool(next:Function) {
+        this.factory.getPool().end((err:any)=>{
+            if(err) {
+                next(err);
+            }
+            else {
+                next(true);
+            }
+        });
     }
 }
  ```
@@ -450,6 +465,120 @@ Here is a example:
  > Multiple SQL runs can also manipulate multiple tables.
 
 
+### Template SQL
+
+ - The class SqlSessionTemplate is used here, which is SqlSessionFactory wrapper class. Its main function is to simplify the operation of getting session, session release. The user takes the session out of the template and does not care about about error fallback or session release.
+
+```javascript
+import path from 'path';
+import { BeforeClass,Test,AfterClass,TUnit,Assert } from 'tunit';
+import { SqlSessionTemplate, DBUtil } from '../index';
+import UserSQL from './UserSQL';
+
+@TUnit('./')
+export default class TemplateTest {
+    template:any
+    constructor() {
+        this.template = null;
+    }
+    @BeforeClass
+    async init(next:Function) {
+        try {
+            const configrationFilePath = path.join(__dirname, './nbatis_config.json');
+            this.template = new SqlSessionTemplate(configrationFilePath);
+            next();
+        }
+        catch(err) {
+            next(err);
+        }
+    }
+    @Test
+    async createTable(next:Function) {
+        const sql = DBUtil.createTableSQL(UserSQL);
+        try {
+            const res = await this.template.querySet(sql);
+            next(res);
+        }
+        catch(err) {
+            next(err);
+        }
+    }
+    @Test
+    async batchInsert(next:Function) {
+        const sql = DBUtil.batchInsertSQL(UserSQL, '', 10);
+        try {
+            const res = await this.template.querySet(sql);
+            const assert = Assert.assertNotNull(res);
+            next(res, assert);
+        }
+        catch(err) {
+            next(err);
+        }
+    }
+    @Test
+    async selectList(next:Function) {
+        try{
+            const params = {
+                start:0,
+                length:5
+            },
+            res = await this.template.selectList('UserSQL.list', params),
+            assert = Assert.assertNotNull(res);
+            next(res, assert);
+        }
+        catch(err) {
+            next(err);
+        }
+    }
+    @Test
+    async insertAndUpdate(next:Function){
+        try{
+            const params = {
+                tableName:'user_sql',
+                username:'test002',
+                password:'123456',
+                gender:'M',
+                birthday:'1996-01-01',
+                email:'test002@vys.cc',
+                url:'test.vys.cc',
+                updatePassword:'654321'
+            },
+            res = await this.template.insert('UserSQL.insertAndUpdate', params);
+            next(res);
+        }
+        catch(err) {
+            next(err);
+        }
+    }
+    @Test
+    async dropTabel(next:Function) {
+        const sql = DBUtil.dropTableSQL(UserSQL);
+        let res:any;
+        try {
+            res = await this.template.querySet(sql);
+            next(res);
+        }
+        catch(err) {
+            next(err);
+        }
+    }
+    @AfterClass
+    async end(next:Function) {
+        try {
+            const res = await this.template.end();
+            next(res);
+        }
+        catch(err) {
+            next(err);
+        }
+    }
+}
+```
+
+ - Let's use **TemplateTest.ts** as an example and it looks a little bit like FactoryTest.ts. Each of these operations takes an session from the connection pool, and template automatically releases session when the operation is complete. In case FactoryTest, it does all the work in one session, and the developer needs to be concerned about fallback and release.
+
+ > SqlSessionTemplate is recommended for practical development.
+
 ### API
 
 **[SqlSessionFactory]**
@@ -466,7 +595,7 @@ createPool(configFilePath:string):any
 ```
  - Return session.
 
-**[Session]**
+**[Session / SqlSessionTemplate]**
 ```javascript
 async selectList(tag:string, params:any):Promise<any>
 ```
@@ -511,6 +640,13 @@ async selectList(tag:string, params:any):Promise<any>
  sql: SQL statement
 
  - Return a list of state object.
+
+**[SqlSessionTemplate]**
+
+```javascript
+end():Promise<any>
+```
+ Close connection pool.
 
 **[DBUtil]**
 ```javascript

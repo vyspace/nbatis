@@ -4,18 +4,20 @@ import { SqlSessionFactory, DBUtil } from '../index';
 import UserSQL from './UserSQL';
 
 @TUnit('./')
-export default class TheTest {
+export default class FactoryTest {
+	factory:any
 	session:any;
 	constructor() {
 		this.session = null;
+		this.factory = null;
 	}
 
 	@BeforeClass
 	async init(next:Function) {
 		try {
-			const configrationFilePath = path.join(__dirname, './nbatis_config.json'),
-			factory = new SqlSessionFactory().createPool(configrationFilePath);
-			this.session = await factory.openSession();
+			const configrationFilePath = path.join(__dirname, './nbatis_config.json');
+			this.factory = new SqlSessionFactory().createPool(configrationFilePath);
+			this.session = await this.factory.openSession();
 			next();
 		}
 		catch(err) {
@@ -180,9 +182,9 @@ export default class TheTest {
 	    }
 	}
 	/**
-	 * To test deleting a table with the class
+	 * To test delete a table with the class
 	 */
-	@AfterClass
+	@Test
 	async dropTabel(next:Function) {
 		const sql = DBUtil.dropTableSQL(UserSQL);
 		let res:any;
@@ -196,9 +198,22 @@ export default class TheTest {
 		finally {
 	        if(this.session) {
 	            await this.session.release();
-	            await this.session.destroy();
 	        }
 	        next(res);
 	    }
+	}
+	/**
+	 * Test to close connection pool
+	 */
+	@AfterClass
+	endPool(next:Function) {
+		this.factory.getPool().end((err:any)=>{
+			if(err) {
+				next(err);
+			}
+			else {
+				next(true);
+			}
+		});
 	}
 }
